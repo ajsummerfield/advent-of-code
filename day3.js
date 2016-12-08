@@ -1734,11 +1734,15 @@ var input = `  330  143  338
   356  902  922`;
 
 var validTriangles = 0;
+var validTrianglesPartTwo = 0;
 
 var rows = input.split('\n');
 
+var array = new Array();
+
 rows.forEach(function(row) {
     var sides = row.match(/\S+/g);
+    array.push(sides);
 
     var a = parseInt(sides[0]);
     var b = parseInt(sides[1]);
@@ -1747,6 +1751,20 @@ rows.forEach(function(row) {
     if ((a + b > c) && (a + c > b) && (b + c > a)) {
         validTriangles++;
     }
-})
+});
 
 console.log(validTriangles);
+
+for (var i = 0; i < array.length; i+=3) {
+    for (var j = 0; j < 3; j++) {
+        var a = parseInt(array[i][j]);
+        var b = parseInt(array[i + 1][j]);
+        var c = parseInt(array[i + 2][j]);
+        
+        if ((a + b > c) && (a + c > b) && (b + c > a)) {
+            validTrianglesPartTwo++;
+        }
+    }
+}
+
+console.log(validTrianglesPartTwo);
