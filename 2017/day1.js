@@ -9,28 +9,28 @@ let day1Input = '389344583542972267855845631756389386175245554258836953363658588
 // doIt('1111'); // 4
 // doIt('1234'); // 0
 // doIt('91212129'); // 9
- doIt(day1Input); // 1228
+// doIt(day1Input); // 1228
 
 // doItAgain('1212'); // 6
 // doItAgain('1221'); // 0
 // doItAgain('123425'); // 4
 // doItAgain('123123'); // 12
 // doItAgain('12131415'); // 4
- doItAgain(day1Input); // 1238
+// doItAgain(day1Input); // 1238
 
-// console.log('Rewritten');
-// doItRewritten('1122', 1);
-// doItRewritten('1111', 1);
-// doItRewritten('1234', 1);
-// doItRewritten('91212129', 1);
-// doItRewritten(puzzleInput, 1);
+console.log('Rewritten');
+doItRewritten('1122', 1);
+doItRewritten('1111', 1);
+doItRewritten('1234', 1);
+doItRewritten('91212129', 1);
+doItRewritten(input, 1);
 
-// doItRewritten('1212', 2);
-// doItRewritten('1221', 2);
-// doItRewritten('123425', 3);
-// doItRewritten('123123', 3);
-// doItRewritten('12131415', 4);
-// doItRewritten(puzzleInput, (puzzleInput.length / 2));
+doItRewritten('1212', 2);
+doItRewritten('1221', 2);
+doItRewritten('123425', 3);
+doItRewritten('123123', 3);
+doItRewritten('12131415', 4);
+doItRewritten(input, (input.length / 2));
 
 function doIt(data) {
     var total = 0;
