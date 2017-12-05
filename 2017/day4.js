@@ -515,8 +515,17 @@ var sample = `aa bb cc dd ee
 aa bb cc dd aa
 aa bb cc dd aaa`;
 
-doIt(sample);
-doIt(input);
+var sampleTwo = `abcde fghij
+abcde xyz ecdab
+a ab abc abd abf abj
+iiii oiii ooii oooi oooo
+oiii ioii iioi iiio`;
+
+//doIt(sample);
+//doIt(input);
+
+doItAgain(sampleTwo);
+doItAgain(input);
 
 function doIt(data) {
     data = data.split("\n");
@@ -524,9 +533,8 @@ function doIt(data) {
 
     for (var i = 0; i < data.length; i++) {
         var row = data[i].split(/\s+/);
-        var duplicates = findDuplicates(row);
 
-        if (!duplicates) {
+        if (!hasDuplicates(row)) {
             total++;
         }
     }
@@ -534,7 +542,24 @@ function doIt(data) {
     console.log(total);
 };
 
-function findDuplicates(row) {
+function doItAgain(data) {
+    var data = data.split("\n");
+    
+    var total = 0;
+    
+    for (var i = 0; i < data.length; i++) {
+        var row = data[i].split(/\s+/);
+        var sorted = createSortedArray(row);
+    
+        if (!hasDuplicates(sorted)) {
+            total++;
+        }
+    }
+    
+    console.log(total);
+};
+
+function hasDuplicates(row) {
     var matches = [];
 
     for (var j = 0; j <= row.length; j++) {
@@ -547,4 +572,14 @@ function findDuplicates(row) {
     }
 
     return false;
-}
+};
+
+function createSortedArray(row) {
+    var sorted = [];
+
+    for (var j = 0; j < row.length; j++) {
+        sorted.push(row[j].split("").sort().join(""));
+    }
+
+    return sorted;
+};
