@@ -1096,36 +1096,32 @@ ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
 cntj (57)`;
 
-doIt(sample);
-doIt(input);
+doIt(sample); // tknk 60
+doIt(input); // azqje 646
 
 function doIt(data) {
-
     data = data.split("\n");
     var programs = [];
-    var baseProgram = '';
+    var baseProgram = {};
+    var requiredWeight = 0;
 
-    for (var i = 0; i < data.length; i++) {
-        var program = getProgram(data[i]);
-        programs.push(program);
-    }
-
+    data.map(x => programs.push(getProgram(x)));
+    setChildProgramData(programs);
+    programs = programs.map(x => updateProgram(x));
+ 
     var programsWithChildren = programs.filter(x => x.children.length > 0);
-    var programsWithChildrenNames = [].concat(...programsWithChildren.map((x, i, arr) => x.children));
+    var childProgramNames = [].concat(...programsWithChildren.map((current, index, arr) => current.children.map(y => y.name)));
 
-    for (var i = 0; i < programsWithChildren.length; i++) {
-        var program = programsWithChildren[i];
-        
-        if (programsWithChildrenNames.indexOf(program.name) === -1) {
-            baseProgram = program;
-        }
-    }
+    baseProgram = programsWithChildren.filter(x => childProgramNames.indexOf(x.name) === -1)[0];
 
-    console.log('Base Program Name: ' + baseProgram.name + '\n' + 'Children: ' + baseProgram.children + '\n');
+    var unbalancedProgram = findUnbalanced(baseProgram);
+    requiredWeight = findRequiredWeight(unbalancedProgram);
+    
+    console.log('Base Program Name: ' + baseProgram.name);
+    console.log('Required Weight: ' + requiredWeight);
 };
 
 function getProgram(row) {
-
     var name = row.split('(')[0].replace(' ', '');
     var weight = +row.match(/\(([0-9]+)\)/)[1];
     var children = row.split(' -> ')[1] ? row.split(' -> ')[1].split(', ') : [];
@@ -1137,7 +1133,57 @@ function getProgram(row) {
     };
 };
 
-function checkForChildren(program) {
-    var children = program.children;
+function setChildProgramData(programs) {
+    var programNames = [];
 
+    for (var i = 0; i < programs.length; i++) {
+        var program = programs[i];
+        programNames[program.name] = program; // create array of names to add program details to children as seen in next loop
+    }
+
+    for (var i = 0; i < programs.length; i++) {
+        var program = programs[i];
+        var updatedChildren = program.children.map((child) => {
+            return programNames[child];
+        });
+
+        program.children = updatedChildren;
+    }
+
+    return programs;
 };
+
+function updateProgram(program) {
+
+    function totalWeight(prog) {
+        return prog.weight + prog.children.reduce((total, child) => total += totalWeight(child), 0);
+    };
+
+    var isBalanced = function(prog) {
+        return prog.children.length === 0 ? true : !!prog.children.map(child => totalWeight(child)).reduce((total, current) => total === current ? total : 0);
+    };
+
+    program.isBalanced = isBalanced(program);
+    program.totalWeight = totalWeight(program);
+
+    return program;
+};
+
+function findUnbalanced(program) {
+    var unbalancedPrograms = program.children.filter(child => !child.isBalanced);
+
+    if (unbalancedPrograms.length === 0) { // found the program
+        return program;
+    }
+
+    return findUnbalanced(unbalancedPrograms[0]); // recurse through each found child
+};
+
+function findRequiredWeight(program) {
+    var weights = program.children.map(child => child.totalWeight); // get the child weights
+    var sortedWeights = weights.slice().sort(); // sort ascending
+    var differentWeight = sortedWeights.filter((weight, index, arr) => arr.indexOf(weight) === index); // find the differeont one
+    
+    var incorrectChildProgram = program.children[weights.indexOf(differentWeight[differentWeight.length - 1])]; // find the program
+    return incorrectChildProgram.weight + (differentWeight[0] - differentWeight[differentWeight.length - 1]); // return the difference
+}
