@@ -524,8 +524,15 @@ oiii ioii iioi iiio`;
 //doIt(sample);
 //doIt(input);
 
-doItAgain(sampleTwo);
-doItAgain(input);
+//doItAgain(sampleTwo);
+//doItAgain(input);
+
+test(input);
+
+function test(data) {
+    var total = data.split("\n").reduce((acc, el, index, arr) => acc += el.split(/\s+/).length === new Set(el.split(/\s+/)).size ? 1 : 0, 0);
+    console.log(total);
+};
 
 function doIt(data) {
     data = data.split("\n");
