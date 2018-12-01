@@ -6,24 +6,19 @@ var sample = 'flqrgnkx';
 var list255 = Array.apply(null, { length : 256}).map(Number.call, Number);
 
 doIt(sample);
-doIt(input);
+//doIt(input);
 
 function doIt(data) {
-    var hashes = [];
     var asciiHashes = [];
     var knotHashes = [];
     var binary = [];
     var total = 0;
 
     for (var i = 0; i < 128; i++) {
-        hashes.push(data + '-' + i);
-    }
-
-    for (var i = 0; i < hashes.length; i++) {
-        var hash = hashes[i];
-        var hashed = hash.split('').map(x => x.charCodeAt(0));
-        hashed.push(17, 31, 73, 47, 23);
-        asciiHashes.push(hashed);
+        var hash = data + '-' + i;
+        var asciiHash = hash.split('').map(x => x.charCodeAt(0));
+        asciiHash.push(17, 31, 73, 47, 23);
+        asciiHashes.push(asciiHash);
     }
 
     for (var i = 0; i < asciiHashes.length; i++) {
@@ -32,37 +27,24 @@ function doIt(data) {
         knotHashes.push(knotHash);
     }
 
-    for (var i = 0; i < knotHashes.length; i++) {
-        var knotHash = knotHashes[i];
-        var binaryValue = getBinaryValue(knotHash);
-        binary.push(binaryValue);
+    binary = knotHashes.map(x => getBinaryValue(x));
+
+    for (var i = 0; i < binary.length; i++) {
+        var binaryRow = binary[i].split('');
+
+        for (var j = 0; j < binaryRow.length; j++) {
+
+            if (+binaryRow[j] === 1) {
+                total++;
+            }
+        }
     }
-
-    // for (var i = 0; i < binary.length; i++) {
-    //     var binaryRow = binary[i].split('');
-
-    //     for (var j = 0; j < binaryRow.length; j++) {
-
-    //         if (+binaryRow[j] === 1) {
-    //             total++;
-    //         }
-    //     }
-    // }
-
-    binary = binary.map(el => el.split('').reduce((acc, col) => { acc += +col; return acc; }, 0));
-    total = binary.reduce((acc, el) => { acc += el; return acc; }, 0);
 
     console.log(total);
 };
 
 function getBinaryValue(knotHash) {
-    var binaryValue = [];
-    knotHash = knotHash.split('');
-
-    for (var i = 0; i < knotHash.length; i++) {
-        binaryValue.push(padStart(hexToBinary(knotHash[i]), 4, '0'));
-    }
-
+    var binaryValue = knotHash.split('').map(x => padStart(hexToBinary(x), 4, '0'));
     return binaryValue.join('');
 };
 
@@ -74,26 +56,30 @@ function getKnotHash(data, list) {
     while (index < 64) {
         index++;
 
-        for (var i = 0; i < data.length; i++) {
-            var length = +data[i];
-            var sublist = [];
+        data.map(x => hashCycle(+x, list, position, skipSize));
 
-            for (var j = 0; j < length; j++) {
-                var val = list[(position + j) % list.length];
-                sublist[j] = val;
-            }
+        // for (var i = 0; i < data.length; i++) {
+        //     var length = +data[i];
+        //     var sublist = [];
 
-            sublist.reverse();
+        //     for (var j = 0; j < length; j++) {
+        //         var val = list[(position + j) % list.length];
+        //         sublist[j] = val;
+        //     }
+
+        //     sublist.reverse();
             
-            for (var j = 0; j < sublist.length; j++) {
-                var val = sublist[j];
-                list[(position + j) % list.length] = val;
-            }
+        //     for (var j = 0; j < length; j++) {
+        //         var val = sublist[j];
+        //         list[(position + j) % list.length] = val;
+        //     }
 
-            position += (length + skipSize);
-            skipSize++;
-        }
+        //     position += (length + skipSize);
+        //     skipSize++;
+        // }
     }
+
+    console.log(list);
 
     var denseHash = [];
 
@@ -103,7 +89,25 @@ function getKnotHash(data, list) {
         denseHash.push(result);
     }
 
-    var knotHash = denseHash.map(x => padStart(x.toString(16), 2, 0)).join('');
+    
+    return denseHash.map(x => padStart(x.toString(16), 2, '0')).join('');
+};
 
-    return knotHash;
+function hashCycle(length, list, position, skipSize) {
+    var sublist = [];
+
+    for (var j = 0; j < length; j++) {
+        var val = list[(position + j) % list.length];
+        sublist[j] = val;
+    }
+
+    sublist.reverse();
+    
+    for (var j = 0; j < length; j++) {
+        var val = sublist[j];
+        list[(position + j) % list.length] = val;
+    }
+
+    position += (length + skipSize);
+    skipSize++;
 };
