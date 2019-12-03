@@ -31,14 +31,14 @@ function partOne(data) {
 }
 
 function partTwo(data) {
-  var program = data.slice();
 
   for (var x = 0; x < 100; x++) {
-    program = data.slice();
+    var program = data.slice();
     program[1] = x;
 
     for (var y = 0; y < 100; y++) {
       program = data.slice();
+      program[1] = x;
       program[2] = y;
       
       for (var i = 0; i < program.length; i += 4) {
@@ -48,9 +48,6 @@ function partTwo(data) {
         var outputNumberPosition = program[i + 3];
         var numberOne = program[numberOnePosition];
         var numberTwo = program[numberTwoPosition];
-
-        console.log('x: ' + x);
-        console.log('y: ' + y);
     
         if (opCode === 1) { // addition
           var additionResult = numberOne + numberTwo;
@@ -59,8 +56,14 @@ function partTwo(data) {
           var multiplicationResult = numberOne * numberTwo;
           program[outputNumberPosition] = multiplicationResult;
         } else if (opCode === 99) { // halt
-          //console.log(program[0]);
-          
+          if (program[0] === 19690720) {
+            var noun = program[1];
+            var verb = program[2];
+            console.log(program[0]);
+            console.log('noun: ' + noun);
+            console.log('verb: ' + verb);
+            console.log(100 * noun + verb);
+          }
           break;
         }
         else { // error
