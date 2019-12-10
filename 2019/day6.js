@@ -1454,6 +1454,38 @@ TRH)5M9
 47Z)4BF
 WWD)KB3`;
 
+function test(input, planets) {
+  for (var i = 0; i < input.length; i++) {
+    var row = input[i];
+    var orbitedPlanet = row[0];
+    var orbitingPlanet = row[1];
+
+    if (planets.filter(x => x.name === orbitingPlanet).length === 0) {
+      planets.push({
+        name: orbitingPlanet,
+        planets: [
+          orbitedPlanet
+        ]
+      });
+    }
+
+    planets.forEach(x => {
+      if (x.name === orbitingPlanet) {
+
+        var prevPlanet = planets.filter(y => y.name === orbitedPlanet)[0];
+
+        if (prevPlanet) {
+          prevPlanet.planets.forEach(p => {
+            if (x.planets.indexOf(p) < 0) {
+              x.planets.push(p);
+            }
+          });
+        }
+      }
+    });
+  }
+}
+
 function getPlanets(input, name) {
   var filtered = input.filter(x => x[0] === name);
   var mapped = filtered.map(x => ({
@@ -1520,20 +1552,42 @@ function partTwo(data) {
 }
 
 // partOne(sampleInput);
-// partOne(input);
+partOne(input);
 
-sampleInput = `COM)B
-B)C
-C)D
-D)E
-E)F
-B)G
-G)H
-D)I
-E)J
-J)K
-K)L
-K)YOU
-I)SAN`;
+// sampleInput = `COM)B
+// B)C
+// C)D
+// D)E
+// E)F
+// B)G
+// G)H
+// D)I
+// E)J
+// J)K
+// K)L
+// K)YOU
+// I)SAN`;
 
-partTwo(sampleInput);
+//partTwo(sampleInput);
+
+// var planets = [];
+// var sample = sampleInput.split('\n').map(x => x.split(')'));
+// test(sample, planets);
+
+// var total = 0;
+// for (var i = 0; i< planets.length; i++) {
+//   total += planets[i].planets.length;
+// }
+// console.log(total);
+
+var planets = []
+var real = input.split('\n').map(x => x.split(')'));
+test(real, planets);
+
+var total = 0;
+
+for (var i = 0; i< planets.length; i++) {
+  total += planets[i].planets.length;
+}
+
+console.log(total);
