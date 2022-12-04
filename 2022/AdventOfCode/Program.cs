@@ -6,10 +6,10 @@
     {
         static void Main(string[] args)
         {
-            var partOneResult = DayTwo.RunPartOne();
+            var partOneResult = DayThree.RunPartOne();
             Console.WriteLine($"Part One Result: {partOneResult}");
 
-            var partTwoResult = DayTwo.RunPartTwo();
+            var partTwoResult = DayThree.RunPartTwo();
             Console.WriteLine($"Part Two Result: {partTwoResult}");
         }
     }
