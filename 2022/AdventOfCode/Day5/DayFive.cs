@@ -23,7 +23,7 @@
                 var fromStack = instruction[1] - 1;
                 var toStack = instruction[2] - 1;
 
-                var crates = stacks[fromStack].GetRange(0, moveAmount);
+                var crates = stacks[fromStack].Take(moveAmount);
                 stacks[fromStack].RemoveRange(0, moveAmount);
 
                 crates.Reverse();
@@ -64,6 +64,9 @@
             for (var i = 0; i < input.IndexOf(string.Empty) - 1; i++)
             {
                 var row = input[i];
+                //var test = row.ToCharArray().Select((x, j) => j > 0 && j % 3 == 0 ? ',' : x);
+                var test = Regex.Replace(row, ".{4}", "$0,").Replace(" ", "").Replace("[", "").Replace("]", "");
+
                 crates.Add(row.Replace("    [", "[.] [").Replace("]    ", "] [.]").Replace("    ", " [.]"));
             }
 

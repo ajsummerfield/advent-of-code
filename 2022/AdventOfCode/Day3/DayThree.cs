@@ -10,7 +10,8 @@
             var input = FileReader.Read(3);
 
             var result = input
-                .Select(x => x.Substring(0, x.Length / 2).ToCharArray().FirstOrDefault(y => x.Substring(x.Length / 2, x.Length / 2).Contains(y)))
+                .Select(x => x.Chunk(x.Length / 2).ToList())
+                .Select(y => y.First().FirstOrDefault(z => y.Last().Contains(z)))
                 .Sum(x => GetLetterValue(x));
 
             return result;
@@ -20,9 +21,9 @@
         {
             var input = FileReader.Read(3);
 
-            var groups = input.Select((s, i) => input.Skip(i * 3).Take(3).ToList()).Where(a => a.Any()).ToList();
-
-            var result = groups
+            var result = input
+                .Select((x, i) => input.Skip(i * 3).Take(3).ToList())
+                .Where(x => x.Any())
                 .Select(x => x.Select((y, i) => y.ToCharArray().FirstOrDefault(z => x[i + 1].Contains(z) && x[i + 2].Contains(z))).FirstOrDefault())
                 .Sum(x => GetLetterValue(x));
 
