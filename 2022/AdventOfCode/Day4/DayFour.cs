@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using AdventOfCode.Helpers;
 
     public static class DayFour
@@ -12,14 +13,22 @@
 
             var result = 0;
 
+            var sections = input.Select(x => x.Split(",").Select(y => Regex.Matches(y, @"\d+").Select(z => int.Parse(z.Value))).Select(a => GetSections(a))).ToList();
+
+            sections.ForEach(s =>
+            {
+
+            });
+
             foreach (var pair in input)
             {
                 var assignments = pair.Split(",");
                 var a1Sections = assignments[0].Split("-").Select(int.Parse);
                 var a2Sections = assignments[1].Split("-").Select(int.Parse);
+                var a1SectionNums = GetSections(a1Sections);
+                var a2SectionNums = GetSections(a2Sections);
 
-                if ((a1Sections.First() >= a2Sections.First() && a1Sections.Last() <= a2Sections.Last()) ||
-                    (a2Sections.First() >= a1Sections.First() && a2Sections.Last() <= a1Sections.Last()))
+                if (a1SectionNums.All(x => a2SectionNums.Contains(x)) || a2SectionNums.All(x => a1SectionNums.Contains(x)))
                 {
                     result++;
                 }
@@ -39,21 +48,12 @@
                 var assignments = pair.Split(",");
                 var a1Sections = assignments[0].Split("-").Select(int.Parse);
                 var a2Sections = assignments[1].Split("-").Select(int.Parse);
+                var a1SectionNums = GetSections(a1Sections);
+                var a2SectionNums = GetSections(a2Sections);
 
-                if ((a1Sections.First() >= a2Sections.First() && a1Sections.Last() <= a2Sections.Last()) ||
-                    (a2Sections.First() >= a1Sections.First() && a2Sections.Last() <= a1Sections.Last()))
+                if (a1SectionNums.Intersect(a2SectionNums).Any())
                 {
                     result++;
-                }
-                else
-                {
-                    var a1SectionNums = GetSections(a1Sections);
-                    var a2SectionNums = GetSections(a2Sections);
-
-                    if (a1SectionNums.Any(c => a2SectionNums.Contains(c)))
-                    {
-                        result++;
-                    }
                 }
             }
 
@@ -62,14 +62,7 @@
 
         private static List<int> GetSections(IEnumerable<int> sections)
         {
-            var sectionNums = new List<int>();
-
-            for (var i = sections.First(); i <= sections.Last(); i++)
-            {
-                sectionNums.Add(i);
-            };
-
-            return sectionNums;
+            return Enumerable.Range(sections.First(), (sections.Last() - sections.First() + 1)).Select(i => i).ToList();
         }
     }
 }
